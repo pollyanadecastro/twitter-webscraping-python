@@ -4,9 +4,9 @@
 
 Este projeto foi desenvolvido como atividade acadêmica para demonstrar a coleta de dados da plataforma X (Twitter) utilizando técnicas de **Web Scraping** em Python.
 
-O script acessa o perfil de um usuário e coleta **3 tweets**, extraindo algumas informações importantes e salvando os dados em um arquivo estruturado. É importante mencionar que o X não permite um usuário desconectado - que não esteja logado - a visualizar os tweets mais recentes. Logue, dê enter no terminal e pronto: os tweets estarão salvos no arquivo csv.
-## Dados coletados
+O script acessa o perfil de um usuário e coleta **3 tweets**, extraindo algumas informações importantes e salvando os dados em um arquivo estruturado. É importante mencionar que o X não permite um usuário desconectado - que não esteja logado - a visualizar os tweets mais recentes. Se cadastre, dê enter no terminal e pronto: os tweets estarão salvos no arquivo csv.
 
+## Dados coletados
 O programa extrai as seguintes informações de cada tweet:
 
 * Autor do tweet
@@ -16,16 +16,13 @@ O programa extrai as seguintes informações de cada tweet:
 Esses dados são armazenados em um arquivo **CSV** localizado na pasta `data`.
 
 ## Tecnologias utilizadas
-
 * Python
 * Selenium
 * Time
 * Pandas
 
 ## Estrutura do projeto
-
 x_webscraping/
-
 data/
     tweets.csv
 src/
@@ -51,6 +48,7 @@ data/tweets.csv
 ## Observação
 
 O script foi desenvolvido apenas para fins educacionais, com o objetivo de praticar técnicas de **coleta e organização de dados na web**.
+
 
 
 
