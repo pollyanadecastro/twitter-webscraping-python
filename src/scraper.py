@@ -1,58 +1,59 @@
 from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
-from bs4 import BeautifulSoup
-import pandas as pd
+from selenium.webdriver.common.by import By
 import time
-import os
-
-usuario = "PostsOfCats"
-url = f"https://twitter.com/{usuario}"
+import pandas as pd
 
 options = webdriver.ChromeOptions()
 
-driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
-driver.get(url)
+# evita detecção de automação
+options.add_argument("--disable-blink-features=AutomationControlled")
+options.add_experimental_option("excludeSwitches", ["enable-automation"])
+options.add_experimental_option("useAutomationExtension", False)
 
-time.sleep(60)
+driver = webdriver.Chrome(options=options)
 
-html = driver.page_source
-driver.quit()
+# abre o X
+driver.get("https://twitter.com/login")
 
-soup = BeautifulSoup(html, "html.parser")
+print("Faça login manualmente e depois pressione ENTER no terminal para armazenar os três tweets mais recentes do usuário escolhido...")
+input()
 
-posts = soup.find_all("article")
+# Escolha o usuário aqui!
+driver.get("https://twitter.com/ElonMusk")
+
+time.sleep(5)
+
+tweets = driver.find_elements(By.XPATH, "//article")[:3]
 
 dados = []
 
-contador = 0
+for tweet in tweets:
 
-for post in posts:
+    try:
+        autor = tweet.find_element(By.XPATH, './/span').text
+    except:
+        autor = ""
 
-    if contador == 3:
-        break
+    try:
+        texto = tweet.find_element(By.XPATH, './/div[@lang]').text
+    except:
+        texto = ""
 
-    autor = post.find("div", {"data-testid":"User-Name"})
-    autor = autor.text if autor else "N/A"
-
-    texto = post.find("div", {"data-testid":"tweetText"})
-    texto = texto.text if texto else "N/A"
-
-    data = post.find("time")
-    data = data["datetime"] if data else "N/A"
-
+    try:
+        data = tweet.find_element(By.XPATH, './/time').get_attribute("datetime")
+    except:
+        data = ""
     dados.append({
-        "autor": autor,
-        "texto": texto,
-        "data": data
+        "Autor": autor,
+        "Data": data,
+        "Texto": texto
     })
 
-    contador += 1
 
 df = pd.DataFrame(dados)
+df.to_csv("tweets.csv", index=False, encoding="utf-8")
 
-os.makedirs("data", exist_ok=True)
-df.to_csv("data/tweets.csv", index=False)
+print("Tweets salvos em tweets.csv")
 
-
-print(df)
+# NÃO fecha o navegador
+input("Pressione ENTER para encerrar o script...")
