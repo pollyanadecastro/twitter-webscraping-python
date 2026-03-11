@@ -19,36 +19,53 @@ print("Faça login manualmente e depois pressione ENTER no terminal para armazen
 input()
 
 # Escolha o usuário aqui!
-driver.get("https://twitter.com/ElonMusk")
+driver.get("https://twitter.com/choquei")
 
 time.sleep(5)
 
-tweets = driver.find_elements(By.XPATH, "//article")[:3]
+
 
 dados = []
 
-for tweet in tweets:
+contador = 0
+while contador < 3:
+    tweets = driver.find_elements(By.XPATH, "//article")
 
-    try:
-        autor = tweet.find_element(By.XPATH, './/span').text
-    except:
-        autor = ""
+    for tweet in tweets:
+        if contador >= 3:
+            break
+        texto_total = tweet.text.lower()
 
-    try:
-        texto = tweet.find_element(By.XPATH, './/div[@lang]').text
-    except:
-        texto = ""
+        # ignorar fixado
+        if "pinned" in texto_total:
+            continue
+        # ignorar anuncio
+        if "promoted" in texto_total:
+            continue
+        # ignorar repost
+        if "reposted" in texto_total:
+            continue
 
-    try:
-        data = tweet.find_element(By.XPATH, './/time').get_attribute("datetime")
-    except:
-        data = ""
-    dados.append({
-        "Autor": autor,
-        "Data": data,
-        "Texto": texto
-    })
+        try:
+            autor = tweet.find_element(By.XPATH, './/span').text
+        except:
+            autor = ""
 
+        try:
+            texto = tweet.find_element(By.XPATH, './/div[@lang]').text
+        except:
+            texto = ""
+
+        try:
+            data = tweet.find_element(By.XPATH, './/time').get_attribute("datetime")
+        except:
+            data = ""
+        dados.append({
+            "Autor": autor,
+            "Data": data,
+            "Texto": texto
+        })  
+        contador += 1
 
 df = pd.DataFrame(dados)
 df.to_csv("tweets.csv", index=False, encoding="utf-8")
